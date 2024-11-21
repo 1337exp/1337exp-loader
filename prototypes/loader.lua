@@ -58,12 +58,14 @@ local function make_entity(input)
         corpse = "small-remnants",
         dying_explosion = input.transport_belt.dying_explosion,
 
-        collision_box = { {-0.4, -0.45}	, {0.4, 0.45} },
-        selection_box = { {-0.5, -0.5}	, {0.5, 0.5} 	},
-        drawing_box = { {-0.4, -0.4}	, {0.4, 0.4} 	},
+        collision_box = { {-0.4, -0.45}, {0.4, 0.45} },
+        selection_box = { {-0.5, -0.5}, {0.5, 0.5} },
+        drawing_box = { {-0.4, -0.4}, {0.4, 0.4} },
+
         container_distance = 0.75, -- Default: 1.5
         -- belt_distance = 0.5, --Default1x1: 0.0  --Default2x1: 0.5
         belt_length = 0.5, -- Default: 0.5
+
         structure_render_layer = "object",
         -- structure_render_layer = "transport-belt-circuit-connector", --Default:"lower-object"
         belt_animation_set = input.transport_belt.belt_animation_set,

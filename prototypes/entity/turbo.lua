@@ -6,7 +6,7 @@ local crafting_item_1 = mods["space-age"] and "stack-inserter" or "bulk-inserter
 
 local technology = mods["space-age"] and
         {
-            prerequisites = {"turbo-transport-belt"},
+            prerequisites = { "stack-inserter", "turbo-transport-belt" },
             unit = {
                 count = 2500,
                 ingredients =
@@ -16,13 +16,14 @@ local technology = mods["space-age"] and
                     {"chemical-science-pack", 1},
                     {"production-science-pack", 1},
                     {"space-science-pack", 1},
-                    {"metallurgic-science-pack", 1}
+                    {"metallurgic-science-pack", 1},
+                    {"agricultural-science-pack", 1}
                 },
                 time = 120
             }
         } or
         {
-            prerequisites = {"logistics-3"},
+            prerequisites = { "bulk-inserter", "logistics-3" },
             unit = {
                 count = 1500,
                 ingredients =
