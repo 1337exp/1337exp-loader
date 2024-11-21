@@ -1,0 +1,13 @@
+{
+	"name": "1337exp-loader",
+	"version": "1.0.0",
+	"title": "1337exp / Loader",
+	"author": "Lazy",
+	"dependencies": [
+		"base >= 2.0.2",
+		"? space-age >= 2.0.2"
+	],
+	"description": "Simplify your logistics without overcomplicating your endgame. This mod introduces a straightforward and efficient loader that integrates seamlessly into the game's progression.",
+	"factorio_version": "2.0",
+	"homepage": "https://666.io"
+}
