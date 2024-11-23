@@ -1,9 +1,9 @@
-local hit_effects = require ("__base__.prototypes.entity.hit-effects")
+local hit_effects = require("__base__.prototypes.entity.hit-effects")
 
 -----------------------------------------------------
 
 local Actor = {
-    loader_count = 0
+    last_index = 0
 }
 
 ---]>
@@ -11,7 +11,6 @@ local Actor = {
 local sprite_shift = { 0, -0.15 }
 local shadow_shift = { 0.4, 0.15 }
 local graphics_path = "__1337exp-loader__/graphics/"
-local dark_suffix = "_dark"
 
 -----------------------------------------------------
 
@@ -27,7 +26,6 @@ data:extend{
 -----------------------------------------------------
 
 local function make_entity(input)
-    local suffix = input.dark and dark_suffix or ""
     local structure = input.structure or "loader"
     local localised_description = { "entity-description.1337exp-loader-desc" }
 
@@ -38,19 +36,20 @@ local function make_entity(input)
         type = "loader-1x1",
         icons = {
             {
-                icon = graphics_path .. "icons/" .. (input.icon or "loader") .. suffix .. ".png",
+                icon = graphics_path .. "icons/" .. (input.icon or "loader") .. ".png",
                 icon_size = 64
             },
             {
-                icon = graphics_path .. "icons/" .. (input.icon or "loader") .. "_mask" .. suffix .. ".png",
+                icon = graphics_path .. "icons/" .. (input.icon or "loader") .. "_mask" .. ".png",
                 icon_size = 64,
                 tint = input.color
             }
         },
+
         localised_name = input.localised_name,
         localised_description = localised_description,
         icon_size = 64,
-        flags = {"placeable-neutral", "player-creation"},
+        flags = { "placeable-neutral", "player-creation" },
 
         minable = { mining_time = 0.1, result = input.name },
         filter_count = 5,
@@ -63,8 +62,7 @@ local function make_entity(input)
         drawing_box = { {-0.4, -0.4}, {0.4, 0.4} },
 
         container_distance = 0.75, -- Default: 1.5
-        -- belt_distance = 0.5, --Default1x1: 0.0  --Default2x1: 0.5
-        belt_length = 0.5, -- Default: 0.5
+        belt_length = 0.5, -- Default1x1: 0.0  --Default2x1: 0.5
 
         structure_render_layer = "object",
         -- structure_render_layer = "transport-belt-circuit-connector", --Default:"lower-object"
@@ -121,6 +119,9 @@ local function make_entity(input)
                 }
         ),
         circuit_wire_max_distance = transport_belt_circuit_wire_max_distance,
+
+        ---
+
         structure = {
             direction_in = {
                 sheets = {
@@ -134,7 +135,7 @@ local function make_entity(input)
                         draw_as_shadow = true
                     },
                     {
-                        filename = graphics_path .. "entity/loader/" .. structure .. suffix .. ".png",
+                        filename = graphics_path .. "entity/loader/" .. structure .. ".png",
                         priority = "extra-high",
                         shift = sprite_shift,
                         width = 99,
@@ -142,15 +143,13 @@ local function make_entity(input)
                         scale = 0.5
                     },
                     {
-                        filename = graphics_path .. "entity/loader/" .. structure .. "_tint" .. suffix .. ".png",
+                        filename = graphics_path .. "entity/loader/" .. structure .. "_tint" .. ".png",
                         priority = "extra-high",
                         shift = sprite_shift,
                         width = 99,
                         height = 117,
                         scale = 0.5,
-                        tint = input.color,
-
-                        draw_as_light = true
+                        tint = input.color
                     },
                 }
             },
@@ -164,10 +163,10 @@ local function make_entity(input)
                         height = 79,
                         y = 79,
                         scale = 0.5,
-                        draw_as_shadow = true,
+                        draw_as_shadow = true
                     },
                     {
-                        filename = graphics_path .. "entity/loader/" .. structure .. suffix .. ".png",
+                        filename = graphics_path .. "entity/loader/" .. structure .. ".png",
                         priority = "extra-high",
                         shift = sprite_shift,
                         width = 99,
@@ -176,20 +175,21 @@ local function make_entity(input)
                         scale = 0.5
                     },
                     {
-                        filename = graphics_path .. "entity/loader/" .. structure .. "_tint" .. suffix .. ".png",
+                        filename = graphics_path .. "entity/loader/" .. structure .. "_tint" .. ".png",
                         priority = "extra-high",
                         shift = sprite_shift,
                         width = 99,
                         height = 117,
                         y = 117,
                         scale = 0.5,
-                        tint = input.color
+                        tint = input.color,
                     }
                 }
             },
+
             frozen_patch_in = {
                 sheet = {
-                    filename = graphics_path .. "entity/loader/frozen/" .. structure .. ".png",
+                    filename = graphics_path .. "entity/loader/" .. structure .. "_frozen.png",
                     priority = "extra-high",
                     shift = sprite_shift,
                     width = 99,
@@ -199,7 +199,7 @@ local function make_entity(input)
             },
             frozen_patch_out = {
                 sheet = {
-                    filename = graphics_path .. "entity/loader/frozen/" .. structure .. ".png",
+                    filename = graphics_path .. "entity/loader/" .. structure .. "_frozen.png",
                     priority = "extra-high",
                     shift = sprite_shift,
                     width = 99,
@@ -232,7 +232,7 @@ local function make_recipe(input)
         type = "recipe",
         category = recipe_template.crafting_category,
         surface_conditions = recipe_template.surface_conditions or nil,
-        order = input.order or string.format("d[loader]-a%02d[%s]", input.count, input.name),
+        order = input.order or string.format("d[loader]-a%02d[%s]", input.last_index, input.name),
         localised_name = input.localised_name
     }
 
@@ -247,7 +247,6 @@ local function make_recipe(input)
 end
 
 local function make_technology(input)
-    local suffix = input.dark and dark_suffix or ""
     local name = input.technology and input.technology.name or input.name
 
     ---
@@ -260,14 +259,14 @@ local function make_technology(input)
             type = "technology",
             icons = {
                 {
-                    icon = graphics_path .. "technology/loader-tech-icon" .. suffix .. ".png" ,
+                    icon = graphics_path .. "technology/loader-tech-icon" .. ".png" ,
                     icon_size = 256
                 },
                 {
-                    icon = graphics_path .. "technology/loader-tech-icon_mask" .. suffix .. ".png",
+                    icon = graphics_path .. "technology/loader-tech-icon_mask" .. ".png",
                     icon_size = 256, tint = input.color}
             },
-            order = input.order or string.format("d[loader]-a%02d[%s]", input.count, input.name),
+            order = input.order or string.format("d[loader]-a%02d[%s]", input.last_index, input.name),
             localised_name = input.localised_name,
             localised_description = localised_description
         }
@@ -285,7 +284,6 @@ local function make_technology(input)
 end
 
 local function make_item(input)
-    local suffix = input.dark and dark_suffix or ""
     local localised_description = { "entity-description.1337exp-loader-desc" }
 
     local default_src = data.raw.item[input.transport_belt.name]
@@ -298,17 +296,17 @@ local function make_item(input)
             type = "item",
             icons = {
                 {
-                    icon = graphics_path .. "icons/" .. (input.icon or "loader") .. suffix .. ".png",
+                    icon = graphics_path .. "icons/" .. (input.icon or "loader") .. ".png",
                     icon_size = 64
                 },
                 {
-                    icon = graphics_path .. "icons/" .. (input.icon or "loader") .. "_mask" .. suffix .. ".png",
+                    icon = graphics_path .. "icons/" .. (input.icon or "loader") .. "_mask" .. ".png",
                     icon_size = 64,
                     tint = input.color
                 }
             },
 
-            order = input.order or string.format("d[loader]-a%02d[%s]", input.count, input.name),
+            order = input.order or string.format("d[loader]-a%02d[%s]", input.last_index, input.name),
             subgroup = "belt",
 
             localised_name = input.localised_name,
@@ -316,7 +314,7 @@ local function make_item(input)
 
             stack_size = 50,
             default_import_location = input.default_import_location or default_src.default_import_location,
-            weight = input.weight or (40*kg),
+            weight = input.weight or (40 * kg),
 
             place_result = input.name,
             pick_sound = "__base__/sound/item/mechanical-inventory-pickup.ogg",
@@ -326,6 +324,9 @@ local function make_item(input)
             color_hint = default_src.color_hint,
         }
     }
+
+    ---
+
     return data.raw.item[input.name]
 end
 
@@ -389,8 +390,8 @@ function Actor.make(input)
 
     ---
 
-    Actor.loader_count = Actor.loader_count + 1
-    input.count = Actor.loader_count
+    Actor.last_index = Actor.last_index + 1
+    input.last_index = Actor.last_index
 
     ---
 
@@ -411,4 +412,4 @@ end
 
 -----------------------------------------------------
 
-return Actor;
+return Actor
